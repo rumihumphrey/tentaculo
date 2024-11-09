@@ -1,0 +1,6 @@
+{
+    "configuration": "opt=small,usbstack=arduino,debug=off",
+    "board": "adafruit:samd:adafruit_feather_m0",
+    "port": "/dev/tty.usbmodem2101",
+    "sketch": "sketch_jul8e_copy_20240731163228.ino"
+}

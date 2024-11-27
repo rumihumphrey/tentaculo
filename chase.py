@@ -1,6 +1,6 @@
 import requests
 
-ESP32_IP = "192.168.86.248"  
+ESP32_IP = "192.168.86.27"  
 
 def start_chase():
     url = f"http://{ESP32_IP}/chase"

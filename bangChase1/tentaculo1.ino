@@ -19,7 +19,7 @@ Adafruit_NeoPixel onePixel = Adafruit_NeoPixel(1, 33, NEO_GRB + NEO_KHZ800);
 
 bool chaseActive = false;
 
-const char *serverUrl = "http://192.168.86.244:5002/chase";
+const char *serverUrl = "http://192.168.86.250:5002/chase";
 const char *udpAddress = "192.168.86.244";
 
 HTTPClient http;

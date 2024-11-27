@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 716.0, 100.0, 967.0, 828.0 ],
+		"rect" : [ 611.0, 461.0, 967.0, 828.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -40,13 +40,12 @@
 		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
 				"box" : 				{
-					"id" : "obj-63",
+					"id" : "obj-1",
 					"maxclass" : "newobj",
-					"numinlets" : 2,
-					"numoutlets" : 1,
-					"outlettype" : [ "int" ],
-					"patching_rect" : [ 70.0, 386.0, 32.0, 22.0 ],
-					"text" : "+ 60"
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 601.0, 493.0, 32.0, 22.0 ],
+					"text" : "print"
 				}
 
 			}
@@ -57,7 +56,7 @@
 					"numinlets" : 6,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 149.0, 351.0, 71.5, 22.0 ],
+					"patching_rect" : [ 123.5, 355.0, 71.5, 22.0 ],
 					"text" : "scale 1 0"
 				}
 
@@ -69,7 +68,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "int" ],
-					"patching_rect" : [ 163.0, 398.0, 32.0, 22.0 ],
+					"patching_rect" : [ 157.0, 412.0, 32.0, 22.0 ],
 					"text" : "+ 60"
 				}
 
@@ -92,17 +91,6 @@
 			}
 , 			{
 				"box" : 				{
-					"id" : "obj-54",
-					"maxclass" : "newobj",
-					"numinlets" : 1,
-					"numoutlets" : 0,
-					"patching_rect" : [ 111.0, 476.0, 32.0, 22.0 ],
-					"text" : "print"
-				}
-
-			}
-, 			{
-				"box" : 				{
 					"id" : "obj-53",
 					"maxclass" : "newobj",
 					"numinlets" : 2,
@@ -120,7 +108,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 2,
 					"outlettype" : [ "bang", "int" ],
-					"patching_rect" : [ 522.25, 518.0, 29.5, 22.0 ],
+					"patching_rect" : [ 521.0, 476.0, 29.5, 22.0 ],
 					"text" : "t b i"
 				}
 
@@ -132,7 +120,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 521.0, 549.0, 32.0, 22.0 ],
+					"patching_rect" : [ 519.75, 531.0, 32.0, 22.0 ],
 					"text" : "mtof"
 				}
 
@@ -182,7 +170,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "signal" ],
-					"patching_rect" : [ 534.0, 634.0, 29.5, 22.0 ],
+					"patching_rect" : [ 537.75, 633.0, 29.5, 22.0 ],
 					"text" : "*~"
 				}
 
@@ -193,7 +181,7 @@
 					"maxclass" : "ezdac~",
 					"numinlets" : 2,
 					"numoutlets" : 0,
-					"patching_rect" : [ 530.0, 709.0, 45.0, 45.0 ]
+					"patching_rect" : [ 545.0, 699.0, 45.0, 45.0 ]
 				}
 
 			}
@@ -242,7 +230,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 2,
 					"outlettype" : [ "bang", "" ],
-					"patching_rect" : [ 274.0, 346.0, 55.0, 22.0 ],
+					"patching_rect" : [ 274.0, 355.0, 55.0, 22.0 ],
 					"text" : "sel Bang"
 				}
 
@@ -258,6 +246,8 @@
 					"saved_object_attributes" : 					{
 						"autostart" : 1,
 						"defer" : 0,
+						"node_bin_path" : "",
+						"npm_bin_path" : "",
 						"watch" : 0
 					}
 ,
@@ -333,14 +323,32 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-22", 0 ],
+					"destination" : [ "obj-1", 0 ],
+					"order" : 0,
 					"source" : [ "obj-51", 0 ]
 				}
 
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-22", 0 ],
+					"order" : 1,
+					"source" : [ "obj-51", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-1", 0 ],
+					"order" : 0,
+					"source" : [ "obj-52", 1 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-51", 0 ],
+					"order" : 1,
 					"source" : [ "obj-52", 1 ]
 				}
 
@@ -380,17 +388,10 @@
 				}
 
 			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-54", 0 ],
-					"source" : [ "obj-63", 0 ]
-				}
-
-			}
  ],
 		"dependency_cache" : [ 			{
 				"name" : "nodeThing.js",
-				"bootpath" : "~/Documents/Repos/Pcomp/projects/led",
+				"bootpath" : "~/Documents/Repos/Pcomp/projects/tentaculo",
 				"patcherrelativepath" : ".",
 				"type" : "TEXT",
 				"implicit" : 1

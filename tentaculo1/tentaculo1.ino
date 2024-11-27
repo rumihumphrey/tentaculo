@@ -1,7 +1,5 @@
 #include <WiFi.h>
-#include <ESPAsyncWebServer.h>
 #include <Adafruit_NeoPixel.h>
-#include <HTTPClient.h>
 #include <WiFiUdp.h>
 
 const char *ssid = "Yurinet";
@@ -12,24 +10,21 @@ const char *password = "tatted81528;retransform";
 #define UDP_PORT 4210
 
 Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
-AsyncWebServer server(80);
 WiFiUDP udp;
 
 Adafruit_NeoPixel onePixel = Adafruit_NeoPixel(1, 33, NEO_GRB + NEO_KHZ800);
 
 bool chaseActive = false;
 
-const char *serverUrl = "http://192.168.86.244:5002/chase";
-const char *udpAddress = "192.168.86.244";
+const char *udpAddress = "192.168.86.250";
 
-HTTPClient http;
 String message;
-
 unsigned long lastUpdate[3] = { 0, 0, 0 }; // Track the last update time for each animation
 int positions[] = { 0, NUMPIXELS / 3, 2 * NUMPIXELS / 3 };
 uint32_t colors[3];
 int delays[3];
 int widths[3];
+bool initialUpdateSent[3] = { false, false, false }; // Track if the initial update has been sent for each segment
 
 void setup() {
   // Connect to Wi-Fi
@@ -37,9 +32,6 @@ void setup() {
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
   }
-
-  http.begin(serverUrl);
-  http.addHeader("Content-Type", "application/json");
 
   // Initialize the NeoPixel strip
   pixels.begin();
@@ -51,20 +43,15 @@ void setup() {
   onePixel.setBrightness(5);  // Affects all subsequent settings
   onePixel.show();
 
-  // Setup server to handle animation requests
-  server.on("/chase", HTTP_GET, [](AsyncWebServerRequest *request) {
-    chaseActive = true;
-    request->send(200, "text/plain", "Chase animation started");
-  });
-
-  server.begin();
-
   // Initialize colors, delays, and widths for animations
   for (int i = 0; i < 3; i++) {
     colors[i] = pixels.Color(random(0, 256), random(0, 256), random(0, 256));
     delays[i] = random(10, 30);
     widths[i] = random(1, 7);
   }
+
+  // Start chase animation when the system starts
+  chaseActive = true;
 }
 
 void loop() {
@@ -75,10 +62,16 @@ void loop() {
 
 void updateChase() {
   for (int i = 0; i < 3; i++) {
+    // Send the update when the chase starts (only once)
+    if (!initialUpdateSent[i]) {
+      sendChaseUpdate(i, true);
+      initialUpdateSent[i] = true; // Ensure this update is sent only once
+    }
+
     if (millis() - lastUpdate[i] >= delays[i]) {
       // Send the update slightly before the animation reaches the end to compensate for delay
       if (positions[i] == NUMPIXELS - 5) {
-        sendChaseUpdate(i);
+        sendChaseUpdate(i, false);
       }
 
       // Turn off the previous pixels
@@ -101,6 +94,7 @@ void updateChase() {
         colors[i] = pixels.Color(random(0, 256), random(0, 256), random(0, 256));
         delays[i] = random(10, 30);
         widths[i] = random(1, 7);
+        initialUpdateSent[i] = false; // Reset the flag to allow a new start update in the next cycle
       }
 
       lastUpdate[i] = millis();
@@ -108,9 +102,11 @@ void updateChase() {
   }
 }
 
-void sendChaseUpdate(int index) {
-  // Send the update slightly before the animation completes to compensate for delay
-  message = "{\"message\":\"Bang\",";
+void sendChaseUpdate(int index, bool isStart) {
+  // Send the update indicating start or end of the chase animation
+  message = "{\"message\":\"";
+  message += (isStart ? "start" : "end");
+  message += "\",";
   message += "\"color\":" + String(colors[index]) + ",";
   message += "\"delay\":" + String(delays[index]) + ",";
   message += "\"width\":" + String(widths[index]) + "}";

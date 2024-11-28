@@ -5,7 +5,7 @@ import json
 from pythonosc import udp_client
 
 # Define the UDP server settings for Arduino communication
-arduino_ip = "192.168.86.27"  # Replace with your Arduino IP address
+arduino_ip = "192.168.86.27"
 arduino_port = 4210
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
@@ -40,10 +40,11 @@ def send_chase_animation(color, delay, width):
 
 # Main loop to trigger animations and MIDI notes
 try:
+    active_notes = []
     while True:
         # Send random chase animations to Arduino
         color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-        delay = random.randint(10, 30)
+        delay = random.randint(5, 15)  # Faster delay for more frequent animations
         width = random.randint(1, 5)
         send_chase_animation(color, delay, width)
 
@@ -54,15 +55,16 @@ try:
 
         # Send a Note On message
         send_midi_note(note, velocity, True)
+        active_notes.append(note)
 
-        # Wait for a random duration between 0.1 and 1 second
-        time.sleep(random.uniform(0.1, 2.0))
+        # Wait for a shorter duration between 0.05 and 0.3 seconds
+        time.sleep(random.uniform(0.5, 1.2))
 
-        # Send a Note Off message
-        send_midi_note(note, 0, False)
-
-        # Pause before sending another command
-        time.sleep(random.uniform(0.5, 1.0))
+        # Randomly decide to end some of the active notes
+        if active_notes and random.random() < 1.8:
+            note_to_end = random.choice(active_notes)
+            send_midi_note(note_to_end, 0, False)
+            active_notes.remove(note_to_end)
 
 except KeyboardInterrupt:
     print("Stopped sending animations and MIDI messages.")

@@ -45,9 +45,9 @@ try:
     while True:
         # Send random chase animations to Arduino
         color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-        delay = random.randint(5, 15)  # Faster delay for more frequent animations
-        width = random.randint(1, 15)
-        reverse = random.choices([True, False], weights=[80, 20], k=1)[0]
+        delay = random.randint(3, 15)  # Faster delay for more frequent animations
+        width = random.randint(1, 5)
+        reverse = random.choices([True, False], weights=[70, 30], k=1)[0]
         send_chase_animation(color, delay, width, reverse)
 
         # Generate random MIDI notes and send them to the Raspberry Pi
@@ -60,7 +60,7 @@ try:
         active_notes.append(note)
 
         # Wait for a shorter duration between 0.05 and 0.3 seconds
-        time.sleep(random.uniform(0.5, 1.2))
+        time.sleep(random.uniform(0.5, 3.2))
 
         # Randomly decide to end some of the active notes
         if active_notes and random.random() < 1.8:
@@ -70,3 +70,7 @@ try:
 
 except KeyboardInterrupt:
     print("Stopped sending animations and MIDI messages.")
+    # End all active notes when stopping the script
+    for note in active_notes:
+        send_midi_note(note, 0, False)
+    active_notes.clear()

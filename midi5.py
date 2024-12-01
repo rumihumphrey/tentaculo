@@ -2,12 +2,13 @@ import random
 import time
 import socket
 import json
+import serial
 from pythonosc import udp_client
 
-# Define the UDP server settings for Arduino communication
-arduino_ip = "192.168.86.27"
-arduino_port = 4210
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+# Set up Serial communication for Arduino
+SERIAL_PORT = '/dev/tty.usbmodem2101'  # USB address for Arduino
+BAUD_RATE = 115200
+arduino_serial = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1)
 
 # Set up the OSC client to send MIDI messages to the Raspberry Pi
 client_ip = "192.168.86.247"
@@ -26,17 +27,21 @@ def send_midi_note(note, velocity, is_note_on):
     client.send_message("/rnbo/inst/0/midi/in", [status, note, velocity])
     print(f"Sent {'Note On' if is_note_on else 'Note Off'}: Note={note}, Velocity={velocity}")
 
-# Function to send chase animation parameters to Arduino
-def send_chase_animation(color, delay, width):
+# Function to send chase animation parameters to Arduino over Serial
+def send_chase_animation(color, delay, width, reverse):
     message = json.dumps({
         "r": color[0],
         "g": color[1],
         "b": color[2],
         "delay": delay,
-        "width": width
+        "width": width,
+        "reverse": reverse
     })
-    sock.sendto(message.encode(), (arduino_ip, arduino_port))
-    print(f"Sent chase animation: Color={color}, Delay={delay}, Width={width}")
+    try:
+        arduino_serial.write((message + '\n').encode())
+        print(f"Sent chase animation: Color={color}, Delay={delay}, Width={width}, Reverse={reverse}")
+    except Exception as e:
+        print(f"Error sending serial message: {e}")
 
 # Main loop to trigger animations and MIDI notes
 try:
@@ -46,7 +51,8 @@ try:
         color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
         delay = random.randint(3, 15)  # Faster delay for more frequent animations
         width = random.randint(1, 5)
-        send_chase_animation(color, delay, width)
+        reverse = random.choices([True, False], weights=[70, 30], k=1)[0]
+        # send_chase_animation(color, delay, width, reverse)
 
         # Generate random MIDI notes and send them to the Raspberry Pi
         note_list = random.choice([high_b_minor_pentatonic_notes, low_b_minor_pentatonic_notes])
@@ -58,7 +64,7 @@ try:
         active_notes.append(note)
 
         # Wait for a shorter duration between 0.05 and 0.3 seconds
-        time.sleep(random.uniform(0.5, 1.2))
+        time.sleep(random.uniform(0.5, 3.2))
 
         # Randomly decide to end some of the active notes
         if active_notes and random.random() < 1.8:
@@ -72,3 +78,6 @@ except KeyboardInterrupt:
     for note in active_notes:
         send_midi_note(note, 0, False)
     active_notes.clear()
+
+finally:
+    arduino_serial.close()

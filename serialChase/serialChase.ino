@@ -55,8 +55,8 @@ void handleSerialMessage(String message) {
   DeserializationError error = deserializeJson(doc, message);
 
   if (error) {
-    Serial.print("Failed to parse serial message: ");
-    Serial.println(message);
+    // Serial.print("Failed to parse serial message: ");
+    // Serial.println(message);
     return;
   }
 
@@ -69,7 +69,7 @@ void handleSerialMessage(String message) {
   }
 
   if (slot == -1) {
-    Serial.println("No available slot for new animation");
+    // Serial.println("No available slot for new animation");
     return;
   }
 
@@ -82,20 +82,20 @@ void handleSerialMessage(String message) {
   animations[slot].active = true;
   animations[slot].reverse = doc.containsKey("reverse") ? doc["reverse"].as<bool>() : false;
 
-  Serial.print("Started new animation in slot ");
-  Serial.print(slot);
-  Serial.print(" with color: R=");
-  Serial.print(doc["r"].as<int>());
-  Serial.print(", G=");
-  Serial.print(doc["g"].as<int>());
-  Serial.print(", B=");
-  Serial.print(doc["b"].as<int>());
-  Serial.print(", delay: ");
-  Serial.print(doc["delay"].as<int>());
-  Serial.print(", width: ");
-  Serial.print(doc["width"].as<int>());
-  Serial.print(", reverse: ");
-  Serial.println(animations[slot].reverse ? "true" : "false");
+  // Serial.print("Started new animation in slot ");
+  // Serial.print(slot);
+  // Serial.print(" with color: R=");
+  // Serial.print(doc["r"].as<int>());
+  // Serial.print(", G=");
+  // Serial.print(doc["g"].as<int>());
+  // Serial.print(", B=");
+  // Serial.print(doc["b"].as<int>());
+  // Serial.print(", delay: ");
+  // Serial.print(doc["delay"].as<int>());
+  // Serial.print(", width: ");
+  // Serial.print(doc["width"].as<int>());
+  // Serial.print(", reverse: ");
+  // Serial.println(animations[slot].reverse ? "true" : "false");
 }
 
 void updateChase(int index) {
@@ -141,7 +141,7 @@ void clearAnimation(int index) {
   pixels.show();
   animations[index].active = false;
   animations[index].position = 0; // Reset position to prevent leftover LEDs
-  Serial.print("Animation in slot ");
-  Serial.print(index);
-  Serial.println(" has finished.");
+  // Serial.print("Animation in slot ");
+  // Serial.print(index);
+  // Serial.println(" has finished.");
 }

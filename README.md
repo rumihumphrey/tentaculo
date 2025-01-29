@@ -1,4 +1,4 @@
-# Tylo - Python & C++ Integration
+# Tentaculo - Python & C++ Integration
 
 Python on Raspberry Pi with C++ code running on an ESP32. Python handles triggering the Arduino and RNBO patch generating synth sounds running on the Pi and starts up on boot. 
 
